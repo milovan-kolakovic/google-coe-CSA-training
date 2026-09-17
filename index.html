@@ -1,0 +1,1563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Google Ads CoE — Strategic Review Training</title>
+<meta name="description" content="Impactable internal training: how the Google Ads CoE reads an account — the review sequence, the CTR x CVR diagnostic, a live teardown, and how to present a monthly report.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0a0e17">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Google Ads CoE — Strategic Review Training">
+<meta property="og:description" content="How I read a Google Ads account: the review sequence, the two numbers that locate the problem, a live teardown with the dead ends, and the monthly report walkthrough.">
+<meta property="og:site_name" content="Impactable · Internal">
+<meta name="twitter:card" content="summary">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* =====================================================
+   TOKENS
+   ===================================================== */
+:root {
+  --g: #0a0e17;
+  --s: #111a2b;
+  --r: #152034;
+  --b: #27344b;
+  --bb: #36465f;
+  --o: #0099D1;
+  --od: rgba(0,153,209,.12);
+  --om: rgba(0,153,209,.25);
+  --t: #eef2f7;
+  --m: #8b97a8;
+  --f: #647289;
+  --green: #00C4B3;
+  --gd: rgba(0,196,179,.12);
+  --amb: #FFB627;
+  --fd: 'Archivo Black','Helvetica Neue',sans-serif;
+  --fb: 'Inter','Helvetica Neue',sans-serif;
+  --fm: 'JetBrains Mono','Fira Code',monospace;
+  --navy: #1A3B6D;
+  --grad1: linear-gradient(135deg,#1A3B6D 0%,#0099D1 100%);
+}
+
+/* =====================================================
+   RESET
+   ===================================================== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--fb);background:var(--g);color:var(--t);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+img,svg{display:block;max-width:100%}
+ul,ol{list-style:none}
+a{color:inherit;text-decoration:none}
+p{max-width:64ch;line-height:1.65}
+p+p{margin-top:.75em}
+*:focus-visible{outline:2px solid var(--o);outline-offset:2px}
+
+/* =====================================================
+   TYPOGRAPHY
+   ===================================================== */
+h1,h2,h3,h4{font-family:var(--fd);text-wrap:balance;line-height:1.15;font-weight:400}
+h1{font-size:clamp(2.2rem,4.5vw,3.5rem)}
+h2{font-size:clamp(1.6rem,3vw,2.1rem)}
+h3{font-size:1.1rem}
+h4{font-size:.88rem;letter-spacing:.01em}
+
+/* =====================================================
+   SIDENAV
+   ===================================================== */
+#sidenav{
+  position:fixed;left:0;top:0;bottom:0;width:52px;
+  background:rgba(10,14,23,.92);border-right:1px solid var(--b);
+  display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:9px;z-index:100;
+  backdrop-filter:blur(12px);
+}
+.pip{
+  width:6px;height:6px;border-radius:50%;background:var(--bb);
+  cursor:pointer;transition:all .22s;position:relative;border:none;
+}
+.pip.active{background:#00C4B3;transform:scale(1.5)}
+.pip::after{
+  content:attr(data-label);position:absolute;left:18px;top:50%;
+  transform:translateY(-50%);background:var(--s);border:1px solid var(--b);
+  color:var(--t);font-family:var(--fm);font-size:.65rem;padding:4px 10px;
+  border-radius:4px;white-space:nowrap;opacity:0;pointer-events:none;
+  transition:opacity .15s;z-index:200;
+}
+.pip:hover::after{opacity:1}
+
+/* =====================================================
+   LAYOUT
+   ===================================================== */
+#main{margin-left:52px}
+.sec{
+  min-height:100vh;padding:56px 80px;
+  display:flex;flex-direction:column;justify-content:center;
+  position:relative;overflow:hidden;background:var(--g);
+}
+.sec.alt{background:var(--s)}
+.sec.bright{background:var(--r)}
+.sec.dark{
+  background:linear-gradient(135deg,#080c15 0%,#0f2340 42%,#16365f 72%,#1A3B6D 100%);
+  --r:rgba(255,255,255,.07);
+  --b:rgba(255,255,255,.18);
+  --bb:rgba(255,255,255,.30);
+  --s:rgba(255,255,255,.06);
+  --m:rgba(255,255,255,.82);
+  --f:rgba(255,255,255,.60);
+}
+.inner{max-width:1140px;width:100%;margin:0 auto}
+
+/* =====================================================
+   COMMON COMPONENTS
+   ===================================================== */
+.eyebrow{
+  display:inline-flex;align-items:center;gap:10px;
+  font-family:var(--fm);font-size:.65rem;font-weight:500;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--green);
+  margin-bottom:18px;
+}
+.eyebrow::before{content:'';width:22px;height:1px;background:var(--green);flex-shrink:0}
+
+.q-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--od);border:1px solid var(--om);border-radius:4px;
+  font-family:var(--fm);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;
+  padding:4px 10px;color:var(--o);margin-bottom:10px;
+}
+
+.divider{width:28px;height:2px;background:var(--o);margin:14px 0 26px}
+
+.card{background:var(--r);border:1px solid var(--b);border-radius:12px;padding:22px}
+.card.orange-ring{background:var(--od);border-color:var(--om)}
+.card.green-ring{background:var(--gd);border-color:rgba(0,196,179,.28)}
+
+.badge{
+  display:inline-block;font-family:var(--fm);font-size:.6rem;
+  font-weight:500;letter-spacing:.1em;text-transform:uppercase;
+  padding:3px 8px;border-radius:3px;
+}
+.b-ok{background:var(--gd);color:var(--green);border:1px solid rgba(0,196,179,.30)}
+.b-watch{background:rgba(255,182,39,.08);color:var(--amb);border:1px solid rgba(255,182,39,.28)}
+.b-broken{background:rgba(220,38,38,.08);color:#E2564E;border:1px solid rgba(220,38,38,.28)}
+
+.tag-illus{
+  display:inline-flex;align-items:center;gap:6px;
+  font-family:var(--fm);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;
+  padding:3px 10px;border-radius:4px;
+  background:rgba(139,92,246,.08);border:1px solid rgba(139,92,246,.2);color:#A78BFA;
+  margin-bottom:10px;
+}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.grid5{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+
+ul.dl{display:flex;flex-direction:column;gap:6px}
+ul.dl li{
+  padding-left:18px;position:relative;font-size:.84rem;
+  color:var(--m);line-height:1.5;
+}
+ul.dl li::before{content:'—';position:absolute;left:0;color:var(--o);font-size:.72rem}
+ul.dl li strong{color:var(--t)}
+
+.text-o{color:var(--o)}
+.text-g{color:var(--green)}
+.text-a{color:var(--amb)}
+.text-m{color:var(--m)}
+.text-f{color:var(--f)}
+.mono{font-family:var(--fm)}
+.fw8{font-weight:800}
+.fw7{font-weight:700}
+.fw6{font-weight:600}
+.ts{font-size:.78rem}
+.txs{font-size:.7rem}
+.txxs{font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;font-family:var(--fm)}
+.mt8{margin-top:8px}
+.mt12{margin-top:12px}
+.mt16{margin-top:16px}
+.mt20{margin-top:20px}
+.mt24{margin-top:24px}
+.mt32{margin-top:32px}
+.mt40{margin-top:40px}
+.mb10{margin-bottom:10px}
+.mb16{margin-bottom:16px}
+.mb24{margin-bottom:24px}
+
+/* =====================================================
+   HERO
+   ===================================================== */
+.hero-glow{
+  position:absolute;top:-80px;right:-80px;width:500px;height:500px;
+  background:radial-gradient(circle,rgba(0,196,179,.16) 0%,transparent 68%);
+  pointer-events:none;
+}
+.hero-glow2{
+  position:absolute;bottom:-120px;left:60px;width:300px;height:300px;
+  background:radial-gradient(circle,rgba(0,153,209,.08) 0%,transparent 70%);
+  pointer-events:none;
+}
+.hero-kicker{
+  font-family:var(--fm);font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;
+  color:#3BE3D2;margin-bottom:28px;display:flex;align-items:center;gap:12px;
+}
+.hero-kicker::before{content:'';width:28px;height:1px;background:#3BE3D2}
+.sec.dark h1{
+  background:linear-gradient(96deg,#ffffff 0%,#dcf3ff 52%,#6FE9DC 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  letter-spacing:-.005em;
+}
+.hero-sub{font-size:1.02rem;color:rgba(255,255,255,.88);font-weight:500;margin-top:16px;max-width:520px}
+.hero-meta{
+  display:flex;gap:48px;margin-top:52px;padding-top:34px;
+  border-top:1px solid var(--b);flex-wrap:wrap;
+}
+.hm-label{font-family:var(--fm);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.70);margin-bottom:5px}
+.hm-value{font-size:.88rem;color:rgba(255,255,255,.92);font-weight:500}
+.ros{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.ros-item{
+  font-family:var(--fm);font-size:.62rem;padding:6px 11px;
+  background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.22);
+  border-radius:3px;color:rgba(255,255,255,.88);
+}
+
+/* =====================================================
+   CONTROL BOUNDARY
+   ===================================================== */
+.resp-wrap{
+  display:grid;grid-template-columns:1fr 1px 1fr;
+  border:1px solid var(--b);border-radius:8px;overflow:hidden;margin-top:24px;
+}
+.resp-zone{padding:30px 26px}
+.resp-lo{background:rgba(0,153,209,.06)}
+.resp-client{background:var(--s)}
+.resp-divider{
+  background:var(--b);display:flex;flex-direction:column;
+  align-items:center;justify-content:center;position:relative;
+}
+.resp-pill{
+  position:absolute;left:50%;transform:translateX(-50%);
+  background:var(--g);border:1px solid var(--om);border-radius:20px;
+  padding:6px 10px;font-family:var(--fm);font-size:.55rem;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--o);
+  white-space:nowrap;writing-mode:vertical-rl;
+}
+.resp-zone-hd{
+  font-family:var(--fd);font-size:.68rem;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;margin-bottom:18px;
+  display:flex;align-items:center;gap:8px;
+}
+.rz-dot{width:7px;height:7px;border-radius:2px}
+.resp-lo .resp-zone-hd{color:var(--o)}
+.resp-lo .rz-dot{background:var(--o)}
+.resp-client .resp-zone-hd{color:var(--m)}
+.resp-client .rz-dot{background:var(--m)}
+.rflow{display:flex;flex-direction:column;gap:5px}
+.rs{padding:9px 14px;border-radius:5px;font-size:.83rem;font-weight:500;border:1px solid transparent}
+.resp-lo .rs{background:var(--od);border-color:var(--om);color:var(--t)}
+.resp-client .rs{background:var(--r);border-color:var(--b);color:var(--m)}
+.rs-arrow{padding-left:14px;font-size:.65rem;color:var(--f);line-height:1;margin:1px 0}
+.resp-lo .rs-arrow{color:rgba(0,153,209,.35)}
+.resp-note{
+  text-align:center;font-size:.75rem;color:var(--f);
+  font-style:italic;padding:12px 16px;border-top:1px solid var(--b);
+  grid-column:1/-1;background:var(--s);
+}
+
+/* =====================================================
+   BIG STAT / SCORECARD
+   ===================================================== */
+.bstat{background:var(--r);border:1px solid var(--b);border-radius:9px;padding:18px}
+.bstat.flagged{background:var(--od);border-color:var(--om)}
+.bstat.okd{background:var(--gd);border-color:rgba(0,196,179,.28)}
+.bs-lbl{font-family:var(--fm);font-size:.57rem;letter-spacing:.1em;text-transform:uppercase;color:var(--f);margin-bottom:9px}
+.bs-val{font-family:var(--fd);font-size:1.7rem;font-weight:800;line-height:1}
+.bstat.flagged .bs-val{color:var(--o)}
+.bstat.okd .bs-val{color:var(--green)}
+.bs-bench{font-size:.68rem;color:var(--m);margin-top:8px;font-family:var(--fm)}
+.bs-note{font-size:.72rem;color:var(--m);margin-top:9px;line-height:1.45}
+
+.mf-row{
+  display:grid;grid-template-columns:200px 1fr 108px 150px;
+  gap:14px;align-items:center;padding:12px 16px;
+  border-radius:5px;background:var(--r);border:1px solid var(--b);margin-bottom:4px;
+}
+.mf-name{font-family:var(--fd);font-size:.84rem;font-weight:700}
+.mf-bar-bg{height:7px;background:var(--b);border-radius:4px;overflow:hidden}
+.mf-bar-fill{height:100%;background:linear-gradient(to right,rgba(0,153,209,.4),var(--o));border-radius:4px}
+.mf-bar-fill.g{background:linear-gradient(to right,rgba(0,196,179,.35),var(--green))}
+.mf-bar-fill.a{background:linear-gradient(to right,rgba(255,182,39,.35),var(--amb))}
+.mf-val{font-family:var(--fm);font-size:1.02rem;font-weight:500;color:var(--o);text-align:right;font-variant-numeric:tabular-nums}
+.mf-val.g{color:var(--green)}
+.mf-val.a{color:var(--amb)}
+.mf-bench{font-family:var(--fm);font-size:.6rem;color:var(--f);text-align:right}
+
+/* =====================================================
+   MATURITY RAIL
+   ===================================================== */
+.mat-rail{position:relative;padding:0 16px;margin:40px 0 18px}
+.mat-track{position:absolute;top:20px;left:16px;right:16px;height:2px;background:var(--b)}
+.mat-fill{height:100%;background:linear-gradient(to right,var(--b),var(--o));width:100%}
+.mat-nodes{display:flex;justify-content:space-between;position:relative;z-index:1}
+.mat-node{display:flex;flex-direction:column;align-items:center;gap:10px;width:19%}
+.mat-dot{
+  width:40px;height:40px;border-radius:50%;
+  background:var(--r);border:2px solid var(--b);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--fm);font-size:.6rem;color:var(--m);
+}
+.mat-node:last-child .mat-dot{background:var(--o);border-color:var(--o);color:#fff;font-weight:500}
+.mat-node-lbl{font-family:var(--fd);font-size:.65rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--f);text-align:center}
+.mat-node:last-child .mat-node-lbl{color:var(--o)}
+.mat-node-txt{font-size:.7rem;color:var(--m);text-align:center;line-height:1.45}
+
+.gate{display:flex;flex-direction:column;gap:4px;margin-top:8px}
+.gate-item{
+  display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:baseline;
+  background:var(--r);border:1px solid var(--b);border-radius:5px;padding:10px 14px;
+}
+.gate-n{font-family:var(--fm);font-size:.6rem;color:var(--o);letter-spacing:.08em}
+.gate-t{font-size:.79rem;color:var(--m)}
+.gate-t strong{color:var(--t)}
+
+/* =====================================================
+   CTR x CVR MATRIX
+   ===================================================== */
+.mtx-frame{display:grid;grid-template-columns:30px 1fr;grid-template-rows:1fr 26px;gap:8px;margin-top:20px}
+.mtx-y{
+  grid-row:1;grid-column:1;display:flex;align-items:center;justify-content:center;
+  font-family:var(--fm);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--f);writing-mode:vertical-rl;transform:rotate(180deg);
+}
+.mtx-x{
+  grid-row:2;grid-column:2;display:flex;align-items:center;justify-content:center;
+  font-family:var(--fm);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--f);
+}
+.mtx{grid-row:1;grid-column:2;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mtx-cell{border:1px solid var(--b);border-radius:9px;padding:17px 18px;background:var(--r)}
+.mtx-cell.hot{background:var(--od);border-color:var(--o)}
+.mtx-cell.win{background:var(--gd);border-color:rgba(0,196,179,.30)}
+.mtx-coord{font-family:var(--fm);font-size:.57rem;letter-spacing:.1em;text-transform:uppercase;color:var(--f);margin-bottom:9px}
+.mtx-cell.hot .mtx-coord{color:rgba(0,153,209,.75)}
+.mtx-cell.win .mtx-coord{color:rgba(0,196,179,.75)}
+.mtx-verdict{font-family:var(--fd);font-size:.95rem;font-weight:700;margin-bottom:9px;line-height:1.25}
+.mtx-cell.hot .mtx-verdict{color:var(--o)}
+.mtx-cell.win .mtx-verdict{color:var(--green)}
+.mtx-body{font-size:.77rem;color:var(--m);line-height:1.55;max-width:none}
+.mtx-cell.hot .mtx-body{color:var(--t)}
+.mtx-check{margin-top:11px;display:flex;flex-wrap:wrap;gap:5px}
+.mtx-chip{font-family:var(--fm);font-size:.6rem;padding:3px 8px;border-radius:3px;background:rgba(255,255,255,.04);border:1px solid var(--b);color:var(--m)}
+.mtx-cell.hot .mtx-chip{background:rgba(0,153,209,.16);border-color:var(--om);color:var(--o)}
+
+/* =====================================================
+   DIAGNOSTIC TIERS
+   ===================================================== */
+.diag{display:flex;flex-direction:column;gap:3px;margin-top:24px}
+.dtier{display:grid;grid-template-columns:230px 58px 1fr;border-radius:6px;overflow:hidden;border:1px solid var(--b)}
+.dtier.dt-broken{border-color:var(--o)}
+.dtier.dt-check{border-color:var(--bb)}
+.dc-metric{
+  background:var(--r);padding:16px 20px;
+  display:flex;flex-direction:column;justify-content:center;
+  border-right:1px solid var(--b);
+}
+.dtier.dt-broken .dc-metric{background:rgba(0,153,209,.07);border-right-color:var(--om)}
+.dtier.dt-check .dc-metric{background:rgba(54,70,95,.5)}
+.dm-name{font-family:var(--fm);font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--m);margin-bottom:3px}
+.dm-title{font-family:var(--fd);font-size:1rem;font-weight:700}
+.dtier.dt-broken .dm-title{color:var(--o)}
+.dm-bench{font-family:var(--fm);font-size:.6rem;color:var(--f);margin-top:3px}
+.dc-status{display:flex;align-items:center;justify-content:center;font-size:1rem;border-right:1px solid var(--b)}
+.ds-ok{background:var(--gd);color:var(--green)}
+.ds-broken{background:rgba(0,153,209,.12);color:var(--o)}
+.ds-check{background:rgba(54,70,95,.5);color:var(--bb)}
+.dc-levers{background:rgba(255,255,255,.02);padding:13px 18px;display:flex;flex-direction:column;justify-content:center;gap:7px}
+.dlr{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.dl-lbl{font-family:var(--fm);font-size:.57rem;letter-spacing:.1em;text-transform:uppercase;color:var(--f);min-width:58px}
+.dp{font-size:.73rem;padding:3px 9px;border-radius:3px;background:var(--r);border:1px solid var(--b);color:var(--m)}
+.dp.dpa{background:var(--od);border-color:var(--om);color:var(--o);font-weight:600}
+.d-pass{font-size:.72rem;color:var(--green);display:flex;align-items:center;gap:7px;opacity:.85}
+.d-conn{padding-left:246px;font-size:.65rem;color:var(--f);padding-top:2px;padding-bottom:2px}
+.d-conn.ok-conn{color:var(--green)}
+
+/* =====================================================
+   CHAIN
+   ===================================================== */
+.d-chain{display:flex;gap:0;margin-top:20px}
+.d-step{flex:1;padding:15px 16px;background:var(--r);border:1px solid var(--b);border-right:none;position:relative;text-align:center}
+.d-step:first-child{border-radius:7px 0 0 7px}
+.d-step:last-child{border-radius:0 7px 7px 0;border-right:1px solid var(--om);background:var(--od)}
+.d-step:not(:last-child)::after{
+  content:'→';position:absolute;right:-14px;top:50%;
+  transform:translateY(-50%);color:var(--o);font-size:1.1rem;
+  font-weight:700;z-index:5;background:var(--g);
+  width:28px;text-align:center;line-height:1;
+}
+.sec.alt .d-step:not(:last-child)::after{background:var(--s)}
+.ds-label{font-family:var(--fm);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--f);margin-bottom:7px}
+.ds-title{font-family:var(--fd);font-size:1.02rem;font-weight:800}
+.d-step:last-child .ds-title{color:var(--o)}
+.ds-desc{font-size:.72rem;color:var(--m);margin-top:5px}
+
+/* =====================================================
+   TIMELINE / SNOWBALL
+   ===================================================== */
+.sb-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:26px;position:relative}
+.sb-grid::before{content:'';position:absolute;top:20px;left:5%;right:5%;height:1px;background:linear-gradient(to right,var(--b),var(--o));z-index:0}
+.sb-col{display:flex;flex-direction:column;align-items:center;gap:12px;position:relative;z-index:1}
+.sb-dot{width:40px;height:40px;border-radius:50%;background:var(--r);border:2px solid var(--b);display:flex;align-items:center;justify-content:center;font-family:var(--fm);font-size:.65rem;color:var(--m);font-weight:500}
+.sb-col:last-child .sb-dot{background:var(--o);border-color:var(--o);color:#fff}
+.sb-card{background:var(--r);border:1px solid var(--b);border-radius:6px;padding:14px;width:100%}
+.sb-col:last-child .sb-card{background:var(--od);border-color:var(--om)}
+.sb-wk{font-family:var(--fd);font-size:.78rem;font-weight:700;margin-bottom:6px}
+.sb-col:last-child .sb-wk{color:var(--o)}
+.sb-ev{display:flex;flex-direction:column;gap:4px}
+.sb-ev li{font-size:.72rem;color:var(--m);padding-left:12px;position:relative;line-height:1.4}
+.sb-ev li::before{content:'·';position:absolute;left:2px;color:var(--o)}
+.sb-judgment{margin-top:20px;background:var(--s);border:1px solid var(--b);border-left:3px solid var(--o);border-radius:0 6px 6px 0;padding:14px 20px;font-size:.85rem;font-weight:600}
+.sec.alt .sb-judgment{background:var(--g)}
+.sb-judgment span{color:var(--o)}
+
+/* =====================================================
+   DATA TABLE
+   ===================================================== */
+.tt-wrap{overflow-x:auto;margin-top:22px}
+.tt{width:100%;border-collapse:collapse;font-size:.8rem;min-width:720px}
+.tt th{
+  font-family:var(--fm);font-size:.56rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--f);text-align:right;padding:0 12px 10px;border-bottom:1px solid var(--b);font-weight:500;
+}
+.tt th:first-child{text-align:left}
+.tt td{padding:11px 12px;border-bottom:1px solid rgba(39,52,75,.55);text-align:right;font-family:var(--fm);font-variant-numeric:tabular-nums;color:var(--m)}
+.tt td:first-child{text-align:left;font-family:var(--fb);font-weight:600;color:var(--t)}
+.tt tr.flag td{background:rgba(0,153,209,.08)}
+.tt tr.flag td:first-child{color:var(--o)}
+.tt tr.dim td{opacity:.72}
+.tt tr.tot td{border-bottom:none;border-top:1px solid var(--b);color:var(--t);font-weight:600;background:rgba(255,255,255,.02)}
+.tt .bad{color:var(--o);font-weight:600}
+.tt .ok{color:var(--green)}
+.tt .warn{color:var(--amb)}
+
+/* =====================================================
+   DEAD END
+   ===================================================== */
+.dead{
+  background:rgba(255,182,39,.055);border:1px solid rgba(255,182,39,.20);
+  border-left:3px solid var(--amb);border-radius:0 7px 7px 0;padding:15px 20px;
+}
+.dead-lbl{font-family:var(--fm);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--amb);margin-bottom:7px}
+.dead p{font-size:.78rem;color:var(--m);max-width:none;line-height:1.55}
+.dead p strong{color:var(--t)}
+
+/* =====================================================
+   FINDINGS
+   ===================================================== */
+.find{display:flex;flex-direction:column;gap:5px;margin-top:22px}
+.find-row{
+  display:grid;grid-template-columns:34px 1fr 118px;gap:14px;align-items:center;
+  background:var(--r);border:1px solid var(--b);border-radius:6px;padding:13px 16px;
+}
+.find-row.p1{background:var(--od);border-color:var(--o)}
+.find-n{font-family:var(--fd);font-size:1rem;font-weight:800;color:var(--f)}
+.find-row.p1 .find-n{color:var(--o)}
+.find-t{font-size:.82rem;color:var(--m);line-height:1.5}
+.find-t strong{color:var(--t);display:block;margin-bottom:2px;font-size:.84rem}
+.find-row.p1 .find-t strong{color:var(--o)}
+.find-imp{text-align:right}
+
+/* =====================================================
+   OBSERVATION -> MEANING -> ACTION
+   ===================================================== */
+.obs-grid{display:grid;grid-template-columns:1fr 1px 1fr 1px 1fr;border-radius:7px;overflow:hidden;border:1px solid var(--b);margin-top:22px}
+.obs-card{padding:26px 24px;background:var(--r)}
+.obs-card.obs-action{background:var(--od)}
+.obs-div{background:var(--b);display:flex;align-items:center;justify-content:center;position:relative}
+.obs-arr{position:absolute;background:var(--g);border:1px solid var(--b);border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;color:var(--o);font-size:.75rem;font-weight:700}
+.sec.alt .obs-arr{background:var(--s)}
+.obs-lbl{font-family:var(--fm);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--f);margin-bottom:9px}
+.obs-card.obs-action .obs-lbl{color:var(--o)}
+.obs-title{font-family:var(--fd);font-size:.86rem;font-weight:700;margin-bottom:8px}
+.obs-card.obs-action .obs-title{color:var(--o)}
+.obs-text{font-size:.78rem;color:var(--m);max-width:none;line-height:1.55}
+.obs-card.obs-action .obs-text{color:var(--t)}
+
+/* =====================================================
+   QUOTE
+   ===================================================== */
+.quote{
+  background:var(--r);border:1px solid var(--b);border-left:3px solid var(--green);
+  border-radius:0 7px 7px 0;padding:16px 22px;margin-top:20px;
+}
+.quote p{font-size:.85rem;color:var(--t);font-style:italic;max-width:none;line-height:1.6}
+.quote-src{font-family:var(--fm);font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--green);margin-top:9px}
+
+/* =====================================================
+   PART DIVIDER
+   ===================================================== */
+.part2-div{
+  background:linear-gradient(135deg,#0b1120 0%,#16365f 55%,#1A3B6D 100%);padding:64px 80px;
+  display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;
+}
+.part2-div h2{font-family:var(--fd);font-size:2rem;font-weight:800;color:#fff}
+.part2-div p{color:rgba(255,255,255,.88);font-size:.97rem;max-width:none}
+.part2-kicker{font-family:var(--fm);font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:#3BE3D2}
+
+/* =====================================================
+   PRINCIPLES
+   ===================================================== */
+.principles-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:26px}
+.p-item{background:var(--r);border:1px solid var(--b);border-radius:5px;padding:16px;display:flex;gap:11px}
+.p-num{font-family:var(--fm);font-size:.68rem;color:var(--o);opacity:.65;flex-shrink:0;padding-top:1px}
+.p-text{font-size:.79rem;color:var(--m);line-height:1.5}
+.p-text strong{display:block;color:var(--t);font-size:.82rem;margin-bottom:2px}
+
+.big-q{
+  font-family:var(--fd);font-size:clamp(1.3rem,2.8vw,1.85rem);
+  font-weight:800;line-height:1.25;border-left:3px solid var(--o);
+  padding-left:24px;margin:26px 0;max-width:720px;
+}
+
+.mistake-tag{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(0,153,209,.08);border:1px solid var(--om);
+  border-radius:3px;padding:3px 10px;
+  font-family:var(--fm);font-size:.6rem;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--o);margin-bottom:10px;
+}
+
+.rpt-step{
+  display:grid;grid-template-columns:38px 1fr;gap:14px;align-items:start;
+  background:var(--r);border:1px solid var(--b);border-radius:6px;padding:14px 16px;margin-bottom:4px;
+}
+.rpt-n{font-family:var(--fm);font-size:.65rem;color:var(--o);padding-top:3px}
+.rpt-h{font-family:var(--fd);font-size:.82rem;font-weight:700;margin-bottom:4px}
+.rpt-b{font-size:.77rem;color:var(--m);line-height:1.5;max-width:none}
+.rpt-step.emph{background:var(--od);border-color:var(--om)}
+.rpt-step.emph .rpt-h{color:var(--o)}
+
+/* =====================================================
+   RESPONSIVE
+   ===================================================== */
+@media(max-width:1000px){
+  .sec{padding:60px 44px}
+  .grid3,.grid4,.grid5{grid-template-columns:1fr 1fr}
+  .dtier{grid-template-columns:150px 50px 1fr}
+  .d-conn{padding-left:166px}
+  .mf-row{grid-template-columns:150px 1fr 96px}
+  .mf-bench{display:none}
+  .mat-nodes{flex-wrap:wrap;gap:20px;justify-content:flex-start}
+  .mat-node{width:30%}
+  .mat-track{display:none}
+}
+@media(max-width:680px){
+  #sidenav{display:none}
+  #main{margin-left:0}
+  .sec{padding:48px 24px}
+  .resp-wrap{grid-template-columns:1fr}
+  .resp-divider{height:1px;width:100%}
+  .resp-pill{writing-mode:horizontal-tb;top:50%;left:50%;transform:translate(-50%,-50%)}
+  .grid2,.grid3,.grid4,.grid5{grid-template-columns:1fr}
+  .obs-grid{grid-template-columns:1fr}
+  .obs-div{display:none}
+  .d-chain{flex-direction:column}
+  .d-step{border-right:1px solid var(--b);border-bottom:none}
+  .d-step:first-child{border-radius:7px 7px 0 0}
+  .d-step:last-child{border-radius:0 0 7px 7px;border-top:none}
+  .d-step:not(:last-child)::after{content:'↓';right:auto;left:50%;transform:translateX(-50%);bottom:-14px;top:auto}
+  .mtx{grid-template-columns:1fr}
+  .mtx-frame{grid-template-columns:1fr}
+  .mtx-y{display:none}
+  .mtx-x{grid-column:1}
+  .sb-grid{grid-template-columns:1fr}
+  .sb-grid::before{display:none}
+  .mat-node{width:100%}
+  .part2-div{padding:48px 24px}
+  .principles-grid{grid-template-columns:1fr}
+  .find-row{grid-template-columns:28px 1fr;gap:10px}
+  .find-imp{grid-column:2}
+  .dtier{grid-template-columns:1fr}
+  .dc-metric,.dc-status{border-right:none;border-bottom:1px solid var(--b)}
+  .dc-status{padding:8px}
+  .d-conn{padding-left:16px}
+}
+</style>
+</head>
+<body>
+<!-- ====== SIDE NAV ====== -->
+<nav id="sidenav" role="navigation" aria-label="Section navigation">
+  <button class="pip active" data-label="Overview" onclick="goto('s0')" aria-label="Go to Overview"></button>
+  <button class="pip" data-label="Q1 — What Google Owns" onclick="goto('s1')" aria-label="Go to Q1"></button>
+  <button class="pip" data-label="Q2 — Google + LinkedIn" onclick="goto('s2')" aria-label="Go to Q2"></button>
+  <button class="pip" data-label="Q3 — A Healthy Account" onclick="goto('s3')" aria-label="Go to Q3"></button>
+  <button class="pip" data-label="Immature → Mature" onclick="goto('s4')" aria-label="Go to maturity"></button>
+  <button class="pip" data-label="Q4 — Mistakes 1 & 2" onclick="goto('s5')" aria-label="Go to mistakes 1 and 2"></button>
+  <button class="pip" data-label="Q4 — Mistakes 3–5" onclick="goto('s6')" aria-label="Go to mistakes 3 to 5"></button>
+  <button class="pip" data-label="The CTR × CVR Matrix" onclick="goto('s7')" aria-label="Go to the matrix"></button>
+  <button class="pip" data-label="Q5 — Optimization" onclick="goto('s8')" aria-label="Go to optimization"></button>
+  <button class="pip" data-label="Q6 — Unique Insights" onclick="goto('s9')" aria-label="Go to insights"></button>
+  <button class="pip" data-label="Q7 — Brandito Teardown" onclick="goto('s10')" aria-label="Go to teardown"></button>
+  <button class="pip" data-label="Teardown — Dead Ends" onclick="goto('s11')" aria-label="Go to dead ends"></button>
+  <button class="pip" data-label="Teardown — The Fix" onclick="goto('s12')" aria-label="Go to the fix"></button>
+  <button class="pip" data-label="Q8 — The Handoff" onclick="goto('s13')" aria-label="Go to handoff"></button>
+  <button class="pip" data-label="Part 2 — Monthly Report" onclick="goto('s14')" aria-label="Go to Part 2"></button>
+  <button class="pip" data-label="The Monthly Report" onclick="goto('s15')" aria-label="Go to monthly report"></button>
+  <button class="pip" data-label="Client Pushback" onclick="goto('s16')" aria-label="Go to pushback"></button>
+  <button class="pip" data-label="Core Principles" onclick="goto('s17')" aria-label="Go to principles"></button>
+</nav>
+
+<main id="main">
+
+<!-- ================= HERO ================= -->
+<section class="sec dark" id="s0">
+  <div class="hero-glow" aria-hidden="true"></div>
+  <div class="hero-glow2" aria-hidden="true"></div>
+  <div class="inner">
+    <div class="hero-kicker">Impactable · Internal Training</div>
+    <h1>Google Ads<br>Center of Excellence</h1>
+    <p class="hero-sub">Strategic Review Training for Client Solutions Advisors</p>
+
+    <div style="margin-top:40px;max-width:600px">
+      <p style="font-size:.92rem;color:rgba(255,255,255,.88);line-height:1.7">
+        This is not a Google Ads course. It is <strong style="color:#fff">how to read an account</strong> — what to check first, the two numbers that tell you where the problem is, and how to turn a finding into something a client understands.
+      </p>
+      <div style="margin-top:20px;display:flex;align-items:center;gap:14px;font-family:var(--fm);font-size:.72rem;color:#5FD8FF;letter-spacing:.08em;flex-wrap:wrap">
+        <span>QUERY</span><span style="color:rgba(255,255,255,.45)">→</span>
+        <span>CLICK</span><span style="color:rgba(255,255,255,.45)">→</span>
+        <span>PAGE</span><span style="color:rgba(255,255,255,.45)">→</span>
+        <span>FORM</span><span style="color:rgba(255,255,255,.45)">→</span>
+        <span>CRM</span>
+      </div>
+      <p style="font-size:.84rem;color:rgba(255,255,255,.72);margin-top:12px">Every Google Ads problem sits in one of those five links. The review names which one.</p>
+    </div>
+
+    <div class="hero-meta">
+      <div>
+        <div class="hm-label">Format</div>
+        <div class="hm-value">30 min, plus questions</div>
+      </div>
+      <div>
+        <div class="hm-label">Presented by</div>
+        <div class="hm-value">Milovan Kolakovic · Google Ads CoE</div>
+      </div>
+    </div>
+
+    <div style="margin-top:24px">
+      <div class="hm-label">Agenda</div>
+      <div class="ros">
+        <span class="ros-item">What Google owns</span>
+        <span class="ros-item">What a healthy account looks like</span>
+        <span class="ros-item">The five common mistakes</span>
+        <span class="ros-item">The two numbers that diagnose anything</span>
+        <span class="ros-item">Live teardown · Brandito</span>
+        <span class="ros-item">Presenting the monthly report</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= S1 — Q1 ================= -->
+<section class="sec alt" id="s1">
+  <div class="inner">
+    <div class="q-badge">Question 1</div>
+    <h2>What Google Ads is accountable for</h2>
+    <div class="divider"></div>
+
+    <div class="grid2" style="align-items:start;gap:32px">
+      <div>
+        <p style="color:var(--m)">Google Ads captures demand that already exists. It does not create it. Everything inside that boundary is ours — everything outside it is not.</p>
+
+        <div class="mt24">
+          <div class="txxs text-m mb16">We are accountable for</div>
+          <ul class="dl mt8">
+            <li><strong>The queries we pay for</strong> — would a buyer search this?</li>
+            <li><strong>The click</strong> — CTR, ad copy, ad strength</li>
+            <li><strong>Query-to-page match</strong> — does the page answer the search?</li>
+            <li><strong>Conversion rate</strong> on the traffic we send</li>
+            <li><strong>Cost per lead</strong> and how much spend was wasted</li>
+            <li><strong>Clean tracking</strong> — the right conversions, firing properly</li>
+          </ul>
+        </div>
+
+        <div class="mt24">
+          <div class="txxs text-m mb16">We are not accountable for</div>
+          <ul class="dl mt8">
+            <li><strong>How many people search</strong> — that is a ceiling, not a lever</li>
+            <li><strong>Who is behind the keyboard</strong> — we buy the query, not the person</li>
+            <li><strong>The offer</strong>, and whether the market wants it</li>
+            <li><strong>Sales follow-up</strong> and close rate</li>
+          </ul>
+        </div>
+      </div>
+
+      <div>
+        <div class="resp-wrap">
+          <div class="resp-zone resp-lo">
+            <div class="resp-zone-hd"><span class="rz-dot"></span>Google Ads owns</div>
+            <div class="rflow">
+              <div class="rs">Query matched</div>
+              <div class="rs-arrow">↓</div>
+              <div class="rs">Click earned &nbsp;<span class="badge b-ok" style="font-size:.52rem">CTR</span></div>
+              <div class="rs-arrow">↓</div>
+              <div class="rs">Page answers the query</div>
+              <div class="rs-arrow">↓</div>
+              <div class="rs">Form submitted &nbsp;<span class="badge b-ok" style="font-size:.52rem">CVR</span></div>
+              <div class="rs-arrow">↓</div>
+              <div class="rs" style="border-color:rgba(0,153,209,.4);font-weight:700">Lead recorded ✓</div>
+            </div>
+          </div>
+          <div class="resp-divider"><div class="resp-pill">Boundary</div></div>
+          <div class="resp-zone resp-client">
+            <div class="resp-zone-hd"><span class="rz-dot"></span>Outside our control</div>
+            <div class="rflow">
+              <div class="rs">How many people search</div>
+              <div class="rs-arrow">↓</div>
+              <div class="rs">Whether they are a real buyer</div>
+              <div class="rs-arrow">↓</div>
+              <div class="rs">Speed of sales follow-up</div>
+              <div class="rs-arrow">↓</div>
+              <div class="rs">Demo and pricing</div>
+              <div class="rs-arrow">↓</div>
+              <div class="rs">Closed won</div>
+            </div>
+          </div>
+          <div class="resp-note">Lead quality sits on the line. We influence it with queries and negatives. We cannot guarantee it.</div>
+        </div>
+
+        <div class="card orange-ring mt20">
+          <p class="ts" style="color:var(--t)"><strong>Say which number you mean.</strong> We can own cost per <em>qualified</em> lead only when the CRM sends qualification back to Google. Without that, we own cost per <em>lead</em>. State which one before quoting it.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= S2 — Q2 ================= -->
+<section class="sec" id="s2">
+  <div class="inner">
+    <div class="q-badge">Question 2</div>
+    <h2>Where Google sits next to the other channels</h2>
+    <div class="divider"></div>
+
+    <p style="color:var(--m);max-width:86ch">Google captures demand. LinkedIn and content create it. Run Google alone and you are betting enough strangers type the right words this month. Run both and the same money works twice — then Google takes the credit.</p>
+
+    <div class="mt24" style="display:flex;justify-content:center">
+      <svg viewBox="0 0 900 300" width="880" role="img" aria-label="Demand generation creates the search, Google captures it, and site traffic feeds retargeting back into demand generation">
+        <defs>
+          <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#0099D1"></path></marker>
+          <marker id="ahg" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#00C4B3"></path></marker>
+        </defs>
+        <rect x="30" y="46" width="290" height="100" rx="10" fill="rgba(0,196,179,.10)" stroke="#00C4B3"></rect>
+        <text x="52" y="76" fill="#00C4B3" font-family="JetBrains Mono, monospace" font-size="10.5" letter-spacing="1.6">DEMAND GENERATION</text>
+        <text x="52" y="101" fill="#eef2f7" font-family="Archivo Black, sans-serif" font-size="15">LinkedIn · Content</text>
+        <text x="52" y="124" fill="#8b97a8" font-family="Inter, sans-serif" font-size="12">Makes them aware of the problem</text>
+
+        <rect x="580" y="46" width="290" height="100" rx="10" fill="rgba(0,153,209,.14)" stroke="#0099D1"></rect>
+        <text x="602" y="76" fill="#0099D1" font-family="JetBrains Mono, monospace" font-size="10.5" letter-spacing="1.6">DEMAND CAPTURE</text>
+        <text x="602" y="101" fill="#eef2f7" font-family="Archivo Black, sans-serif" font-size="15">Google Search</text>
+        <text x="602" y="124" fill="#8b97a8" font-family="Inter, sans-serif" font-size="12">Converts intent that already exists</text>
+
+        <path d="M 330 86 L 566 86" stroke="#00C4B3" stroke-width="1.4" fill="none" marker-end="url(#ahg)"></path>
+        <text x="448" y="74" fill="#00C4B3" font-family="JetBrains Mono, monospace" font-size="10" text-anchor="middle" letter-spacing="1">CREATES THE SEARCH</text>
+
+        <path d="M 725 156 C 725 236 560 248 450 248 C 340 248 175 236 175 156" stroke="#0099D1" stroke-width="1.4" fill="none" stroke-dasharray="5 4" marker-end="url(#ah)"></path>
+        <text x="450" y="272" fill="#0099D1" font-family="JetBrains Mono, monospace" font-size="10" text-anchor="middle" letter-spacing="1">SITE TRAFFIC → RETARGETING → MORE PRIMED BUYERS</text>
+
+        <rect x="322" y="164" width="256" height="54" rx="7" fill="#152034" stroke="#27344b"></rect>
+        <text x="450" y="186" fill="#eef2f7" font-family="Inter, sans-serif" font-size="12" font-weight="600" text-anchor="middle">Google gets the attribution.</text>
+        <text x="450" y="204" fill="#8b97a8" font-family="Inter, sans-serif" font-size="12" text-anchor="middle">It did not create the demand.</text>
+      </svg>
+    </div>
+
+    <div class="grid3 mt24">
+      <div class="card">
+        <div class="txxs text-o mb10">Google is right for</div>
+        <ul class="dl">
+          <li>Buyers already searching the category</li>
+          <li>Branded search, and defending it</li>
+          <li>Short-cycle, direct response</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="txxs text-m mb10">Google is wrong for</div>
+        <ul class="dl">
+          <li>Brand awareness at scale</li>
+          <li>Educating a market that isn't searching</li>
+          <li>Reaching a named account list</li>
+        </ul>
+      </div>
+      <div class="card orange-ring">
+        <div class="txxs text-o mb10">When a client wants to cut LinkedIn</div>
+        <p class="ts" style="color:var(--t)">Non-brand volume is capped by search demand. Brand volume is capped by how many people have heard of them. Cutting demand gen shrinks the ceiling of the channel they want to double down on.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= S3 — Q3 ================= -->
+<section class="sec alt" id="s3">
+  <div class="inner">
+    <div class="q-badge">Question 3</div>
+    <h2>What a healthy account looks like</h2>
+    <div class="divider"></div>
+
+    <p style="color:var(--m);max-width:86ch">Five numbers. They tell you in about a minute whether an account is healthy, and if not, which half of the funnel is broken. Ranges are for our clients — B2B, $3–10K a month, lead gen.</p>
+
+    <div class="mt24">
+      <div class="mf-row">
+        <div class="mf-name">Click-through rate<div class="txs text-f" style="font-family:var(--fb);font-weight:400;text-transform:none;letter-spacing:0">Non-brand</div></div>
+        <div class="mf-bar-bg"><div class="mf-bar-fill" style="width:68%"></div></div>
+        <div class="mf-val">3 – 5%</div>
+        <div class="mf-bench">Brand: 20–30%+</div>
+      </div>
+      <div class="mf-row">
+        <div class="mf-name">Conversion rate<div class="txs text-f" style="font-family:var(--fb);font-weight:400;text-transform:none;letter-spacing:0">Click to form</div></div>
+        <div class="mf-bar-bg"><div class="mf-bar-fill" style="width:58%"></div></div>
+        <div class="mf-val">2 – 5%</div>
+        <div class="mf-bench">Under 1.5% = investigate</div>
+      </div>
+      <div class="mf-row">
+        <div class="mf-name">Cost per lead</div>
+        <div class="mf-bar-bg"><div class="mf-bar-fill a" style="width:72%"></div></div>
+        <div class="mf-val a">$300 – 600</div>
+        <div class="mf-bench">Brand alone often under $150</div>
+      </div>
+      <div class="mf-row">
+        <div class="mf-name">Impression share<div class="txs text-f" style="font-family:var(--fb);font-weight:400;text-transform:none;letter-spacing:0">By campaign type</div></div>
+        <div class="mf-bar-bg"><div class="mf-bar-fill g" style="width:80%"></div></div>
+        <div class="mf-val g">70 / 40–60 / 20</div>
+        <div class="mf-bench">Brand / High-intent / Competitor</div>
+      </div>
+      <div class="mf-row">
+        <div class="mf-name">Query relevance<div class="txs text-f" style="font-family:var(--fb);font-weight:400;text-transform:none;letter-spacing:0">Spend you'd bid on again</div></div>
+        <div class="mf-bar-bg"><div class="mf-bar-fill" style="width:85%"></div></div>
+        <div class="mf-val">80%+</div>
+        <div class="mf-bench">Read the search terms report</div>
+      </div>
+    </div>
+
+    <div class="grid2 mt24" style="gap:20px;align-items:start">
+      <div class="card orange-ring">
+        <div class="txxs text-o mb10">The one that trips people up</div>
+        <p class="ts" style="color:var(--t)">A low CPC is not a win. Tighten targeting and CPC goes up while impressions go down — and conversions go up. Cheap clicks usually mean we are winning auctions nobody valuable is in.</p>
+        <p class="ts mt12" style="color:var(--t)">Over a quarter, healthy looks like: <strong>impressions down, clicks down, conversions up.</strong></p>
+      </div>
+      <div class="card">
+        <div class="txxs text-m mb10">Always split brand out</div>
+        <p class="ts text-m">A blended number inside the benchmark proves nothing. Brand at 30% CTR will pull a broken non-brand campaign up into the range and hide it. Judge them separately, every time.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= S4 — MATURITY ================= -->
+<section class="sec" id="s4">
+  <div class="inner">
+    <div class="q-badge">Question 3 · continued</div>
+    <h2>Immature to mature</h2>
+    <div class="divider"></div>
+
+    <div class="grid2" style="gap:20px;align-items:start">
+      <div class="card">
+        <div class="txxs text-m mb10">Immature account</div>
+        <ul class="dl">
+          <li>One non-brand campaign, broad match, no negatives</li>
+          <li>Every micro-action marked as a primary conversion</li>
+          <li>Search partners on, auto-apply on</li>
+          <li>Ads pointed at the homepage</li>
+          <li>Smart bidding on before there was data to learn from</li>
+        </ul>
+      </div>
+      <div class="card orange-ring">
+        <div class="txxs text-o mb10">Mature account</div>
+        <ul class="dl">
+          <li>Campaigns split by intent — brand, high-intent, mid, competitor</li>
+          <li>Phrase and exact ad groups by theme; broad only as a capped test</li>
+          <li>Four negative lists maintained, search terms reviewed on a cadence</li>
+          <li>One primary conversion that means intent to buy</li>
+          <li>A dedicated landing page per theme</li>
+          <li>Budget follows pipeline, not account structure</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mat-rail">
+      <div class="mat-track"><div class="mat-fill"></div></div>
+      <div class="mat-nodes">
+        <div class="mat-node"><div class="mat-dot">00</div><div class="mat-node-lbl">Inherited</div><div class="mat-node-txt">Broad and unmeasured</div></div>
+        <div class="mat-node"><div class="mat-dot">01</div><div class="mat-node-lbl">Cleaned</div><div class="mat-node-txt">Tracking fixed, brand split, negatives on</div></div>
+        <div class="mat-node"><div class="mat-dot">02</div><div class="mat-node-lbl">Learning</div><div class="mat-node-txt">Phrase and exact themes, weekly search terms</div></div>
+        <div class="mat-node"><div class="mat-dot">03</div><div class="mat-node-lbl">Segmented</div><div class="mat-node-txt">Winners get their own campaign</div></div>
+        <div class="mat-node"><div class="mat-dot">04</div><div class="mat-node-lbl">Compounding</div><div class="mat-node-txt">Target CPA, CRM signals, budget follows pipeline</div></div>
+      </div>
+    </div>
+
+    <div class="mt16">
+      <div class="txxs text-m mb10">You move up on evidence, not on time passing</div>
+      <div class="gate">
+        <div class="gate-item"><div class="gate-n">GATE 1</div><div class="gate-t"><strong>Tracking is correct.</strong> Nothing else matters first. Optimizing to the wrong signal makes an account worse the longer it runs.</div></div>
+        <div class="gate-item"><div class="gate-n">GATE 2</div><div class="gate-t"><strong>20–30 conversions a month</strong> before smart bidding drives — and lead quality confirmed with the client.</div></div>
+        <div class="gate-item"><div class="gate-n">GATE 3</div><div class="gate-t"><strong>A stable CPA for 4–6 weeks.</strong> Then introduce target CPA and step it down 10–20% at a time.</div></div>
+        <div class="gate-item"><div class="gate-n">GATE 4</div><div class="gate-t"><strong>The CRM loop is live.</strong> Now Google can optimize for qualified, not just submitted.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= S5 — MISTAKES 1 & 2 ================= -->
+<section class="sec alt" id="s5">
+  <div class="inner">
+    <div class="q-badge">Question 4 · Mistakes 1 and 2</div>
+    <h2>The two that cost the most</h2>
+    <div class="divider"></div>
+
+    <div class="grid2" style="gap:26px;align-items:start">
+      <div>
+        <div class="mistake-tag">Mistake 1</div>
+        <h3 style="margin-bottom:10px">Broad match with no guardrails</h3>
+        <p class="ts text-m">Google will spend a $6,000 budget on people looking for jobs, free templates and training courses, because those queries are loosely related to what the client sells. On a B2B budget you cannot afford loosely related.</p>
+
+        <div class="card orange-ring mt16">
+          <div class="txxs text-o mb10">Our policy</div>
+          <p class="ts" style="color:var(--t)"><strong>Phrase and exact first.</strong> Broad match is a test — small scope, capped budget, a date it gets judged. If broad is carrying real spend in an account, that is a finding.</p>
+        </div>
+
+        <div class="mt16">
+          <div class="txxs text-m mb10">Why it wins on a tight budget</div>
+          <ul class="dl">
+            <li>Spend stays on queries a buyer would actually type</li>
+            <li>Copy and page can be written to one theme — better ad strength, lower CPC</li>
+            <li>Spend concentrates enough for the algorithm to learn something real</li>
+          </ul>
+        </div>
+
+        <div class="mt16">
+          <div class="txxs text-m mb10">Keyword volume discipline</div>
+          <p class="ts text-m">On a small budget: around <strong style="color:var(--t)">30 high-intent keywords</strong>, avoiding anything much above <strong style="color:var(--t)">200–300 searches a month</strong>. A 4,400/month head term looks good on the plan and then eats the budget without ever holding position.</p>
+        </div>
+      </div>
+
+      <div>
+        <div class="mistake-tag">Mistake 2</div>
+        <h3 style="margin-bottom:10px">Never letting the account have a steady week</h3>
+        <p class="ts text-m">Someone is anxious, so every few days something changes — budget, bid strategy, a new ad group, a paused keyword. The account is permanently in learning, so there is no clean period to read and every conclusion is a guess.</p>
+
+        <div class="sb-grid" style="margin-top:18px;grid-template-columns:repeat(4,1fr)">
+          <div class="sb-col"><div class="sb-dot">W1</div><div class="sb-card"><div class="sb-wk">Week 1</div><ul class="sb-ev"><li>Budget raised 40%</li><li>Two ad groups added</li></ul></div></div>
+          <div class="sb-col"><div class="sb-dot">W2</div><div class="sb-card"><div class="sb-wk">Week 2</div><ul class="sb-ev"><li>Switched to Max Conversions</li><li>Learning restarts</li></ul></div></div>
+          <div class="sb-col"><div class="sb-dot">W3</div><div class="sb-card"><div class="sb-wk">Week 3</div><ul class="sb-ev"><li>CPC spikes, budget cut</li><li>Keywords paused mid-learning</li></ul></div></div>
+          <div class="sb-col"><div class="sb-dot">W4</div><div class="sb-card"><div class="sb-wk">Week 4</div><ul class="sb-ev"><li>Client asks why it's inconsistent</li><li>No clean window to answer with</li></ul></div></div>
+        </div>
+
+        <div class="sb-judgment">Four weeks of spend, zero weeks of signal. <span>The account did not underperform — it was never allowed to perform.</span></div>
+
+        <div class="card orange-ring mt16">
+          <div class="txxs text-o mb10">The fix is a choice, not a compromise</div>
+          <p class="ts" style="color:var(--t)">Either freeze the account for <strong>15–20 days</strong> and read a clean period, or do the whole rebuild <strong>now</strong> — structure, budgets, bidding, conversions together — then leave it alone for <strong>15 days</strong>. What does not work is dripping changes in and expecting a readable result.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="sb-judgment mt24">Open the change history before the performance tab. <span>If there is no unchanged 7-day window, that is the first finding and it outranks every metric on the screen.</span></div>
+  </div>
+</section>
+
+<!-- ================= S6 — MISTAKES 3-5 ================= -->
+<section class="sec" id="s6">
+  <div class="inner">
+    <div class="q-badge">Question 4 · Mistakes 3 to 5</div>
+    <h2>Three more that show up in almost every audit</h2>
+    <div class="divider"></div>
+
+    <div class="grid3" style="gap:16px;align-items:start">
+      <div class="card">
+        <div class="mistake-tag">Mistake 3</div>
+        <h3 style="margin-bottom:10px">Optimizing to the wrong conversion</h3>
+        <p class="ts text-m">Newsletter signups, pricing page views and PDF downloads all set as primary. Smart bidding does what it was told and finds more of the cheapest action on the list. Now most "conversions" are worthless and the algorithm has been trained to chase them.</p>
+        <div class="mt16">
+          <div class="txxs text-m mb10">Check</div>
+          <ul class="dl">
+            <li>How many primary conversion actions exist?</li>
+            <li>Does each one mean intent to buy?</li>
+            <li>Is one action producing 90% of the volume?</li>
+          </ul>
+        </div>
+        <div class="mt16"><span class="badge b-broken">Highest-leverage fix in any audit</span></div>
+      </div>
+
+      <div class="card">
+        <div class="mistake-tag">Mistake 4</div>
+        <h3 style="margin-bottom:10px">Budget spread too thin to learn</h3>
+        <p class="ts text-m">Six campaigns and twenty ad groups on $4K. Nothing gathers enough conversions to optimize, so everything sits in learning and every segment looks mediocre.</p>
+        <div class="mt16">
+          <div class="txxs text-m mb10">Instead</div>
+          <p class="ts text-m">One non-brand campaign with a few themed ad groups. Find the winner, then promote it into its own campaign. That also gives you a real argument for more budget — "this theme works, here is what more of it costs."</p>
+        </div>
+        <div class="mt16"><span class="badge b-watch">Search partners off · auto-apply off</span></div>
+      </div>
+
+      <div class="card">
+        <div class="mistake-tag">Mistake 5</div>
+        <h3 style="margin-bottom:10px">Sending the query somewhere it isn't answered</h3>
+        <p class="ts text-m">The ad group is about one product; the page is about another. The click is fine, the copy is fine, and the visitor leaves because the page does not answer what they just searched. It looks like a conversion rate problem and gets blamed on the ads.</p>
+        <div class="mt16">
+          <div class="txxs text-m mb10">Good looks like</div>
+          <ul class="dl">
+            <li>A dedicated page per theme, not the homepage</li>
+            <li>No navigation — only the CTA and the logo are clickable</li>
+            <li>The headline echoes the search</li>
+          </ul>
+        </div>
+        <div class="mt16"><span class="badge b-watch">Also drives Quality Score</span></div>
+      </div>
+    </div>
+
+    <div class="sb-judgment mt24">Mistakes 3 and 5 both show up as "our conversion rate is bad." <span>They have completely different fixes.</span></div>
+  </div>
+</section>
+
+<!-- ================= S7 — THE MATRIX ================= -->
+<section class="sec alt" id="s7">
+  <div class="inner">
+    <div class="q-badge">The method</div>
+    <h2>Two numbers tell you where the problem is</h2>
+    <div class="divider"></div>
+
+    <p style="color:var(--m);max-width:104ch">The console has a hundred columns. Nearly all the diagnostic value is in two. <strong style="color:var(--o)">CTR</strong> tells you if the query and the copy are working. <strong style="color:var(--o)">Conversion rate</strong> tells you if everything after the click is working.</p>
+
+    <div class="d-chain">
+      <div class="d-step"><div class="ds-label">Keyword</div><div class="ds-title">Query</div><div class="ds-desc">Right search?</div></div>
+      <div class="d-step"><div class="ds-label">CTR</div><div class="ds-title">Click</div><div class="ds-desc">Did the ad earn it?</div></div>
+      <div class="d-step"><div class="ds-label">CVR</div><div class="ds-title">Page</div><div class="ds-desc">Did it answer them?</div></div>
+      <div class="d-step"><div class="ds-label">CVR</div><div class="ds-title">Form</div><div class="ds-desc">Easy to say yes?</div></div>
+      <div class="d-step"><div class="ds-label">CRM</div><div class="ds-title">Qualified</div><div class="ds-desc">A real buyer?</div></div>
+    </div>
+
+    <div class="mtx-frame">
+      <div class="mtx-y">Conversion rate →</div>
+      <div class="mtx">
+        <div class="mtx-cell">
+          <div class="mtx-coord">CTR low · CVR high</div>
+          <div class="mtx-verdict">Right audience, wrong shop window.</div>
+          <p class="mtx-body">The few who click convert well, so the intent is right. We just aren't earning enough clicks. This is an ad problem — often the cheapest win in the account.</p>
+          <div class="mtx-check"><span class="mtx-chip">Ad strength</span><span class="mtx-chip">Keyword in headline</span><span class="mtx-chip">Extensions</span><span class="mtx-chip">Rank loss</span></div>
+        </div>
+        <div class="mtx-cell win">
+          <div class="mtx-coord">CTR high · CVR high</div>
+          <div class="mtx-verdict">It works. Protect it and scale slowly.</div>
+          <p class="mtx-body">Do not celebrate by changing things. Check impression share — if a converting theme is only at 35%, we are leaving demand on the table. Step budget 20–30% every few days.</p>
+          <div class="mtx-check"><span class="mtx-chip">Impression share</span><span class="mtx-chip">Own campaign</span><span class="mtx-chip">Step, don't jump</span></div>
+        </div>
+        <div class="mtx-cell">
+          <div class="mtx-coord">CTR low · CVR low</div>
+          <div class="mtx-verdict">Wrong traffic. Structural, not cosmetic.</div>
+          <p class="mtx-body">Nobody wants to click and nobody wants to convert — the queries are wrong. Do not redesign the page. Almost always broad match, missing negatives, or head terms on a budget that can't hold them.</p>
+          <div class="mtx-check"><span class="mtx-chip">Search terms</span><span class="mtx-chip">Match types</span><span class="mtx-chip">Negative lists</span></div>
+        </div>
+        <div class="mtx-cell hot">
+          <div class="mtx-coord">CTR high · CVR low</div>
+          <div class="mtx-verdict">Keywords and copy work. The break is after the click.</div>
+          <p class="mtx-body">People search the right thing and choose our ad, then land and leave. Changing the ads will make it worse. Look at the page, the form — and the tracking.</p>
+          <div class="mtx-check"><span class="mtx-chip">Query → headline</span><span class="mtx-chip">Not the homepage</span><span class="mtx-chip">Form friction</span><span class="mtx-chip">Is tracking firing?</span></div>
+        </div>
+      </div>
+      <div class="mtx-x">Click-through rate →</div>
+    </div>
+
+    <div class="grid3 mt20" style="gap:12px">
+      <div class="card" style="padding:14px"><div class="txxs text-o mb10">Check first</div><p class="txs text-m"><strong style="color:var(--t)">Is the conversion action real?</strong> If pricing page views count as conversions, the CVR is fiction.</p></div>
+      <div class="card" style="padding:14px"><div class="txxs text-o mb10">Check first</div><p class="txs text-m"><strong style="color:var(--t)">Was there a steady week?</strong> Data measured mid-learning is not a read.</p></div>
+      <div class="card" style="padding:14px"><div class="txxs text-o mb10">Check first</div><p class="txs text-m"><strong style="color:var(--t)">Is brand stripped out?</strong> A 30% brand CTR hides a broken non-brand campaign.</p></div>
+    </div>
+
+    <div class="sb-judgment mt16">"The ads aren't working" has four different meanings. <span>This tells you which one — and stops the two most expensive mistakes: rebuilding a page when the keywords were wrong, or rewriting ads when the page was wrong.</span></div>
+  </div>
+</section>
+
+<!-- ================= S8 — OPTIMIZATION ================= -->
+<section class="sec" id="s8">
+  <div class="inner">
+    <div class="q-badge">Question 5</div>
+    <h2>What optimization actually looks like</h2>
+    <div class="divider"></div>
+
+    <p style="color:var(--m);max-width:86ch">It is not creative iteration. It is removing waste and moving money toward what already converts, on a fixed cadence.</p>
+
+    <div class="diag">
+      <div class="dtier dt-broken">
+        <div class="dc-metric"><div class="dm-name">Weekly · bi-weekly</div><div class="dm-title">Search terms</div><div class="dm-bench">Impact: highest</div></div>
+        <div class="dc-status ds-broken">◆</div>
+        <div class="dc-levers">
+          <div class="dlr"><span class="dl-lbl">Cut</span><span class="dp dpa">Junk queries</span><span class="dp">free · jobs · template · course</span></div>
+          <div class="dlr"><span class="dl-lbl">Reroute</span><span class="dp dpa">Wrong campaign</span><span class="dp">high-intent query landing in a mid-intent group</span></div>
+          <div class="dlr"><span class="dl-lbl">Pause</span><span class="dp dpa">Bleeders</span><span class="dp">relevant, spending, never converting</span></div>
+        </div>
+      </div>
+      <div class="d-conn">↓ &nbsp;most of the wasted spend is found here</div>
+
+      <div class="dtier dt-check">
+        <div class="dc-metric"><div class="dm-name">Weekly to bi-weekly</div><div class="dm-title">Bids and budget</div><div class="dm-bench">Impact: high</div></div>
+        <div class="dc-status ds-check">◆</div>
+        <div class="dc-levers">
+          <div class="dlr"><span class="dl-lbl">Up</span><span class="dp">+10% where rank loss &gt; 40%</span><span class="dp">+10% on top converters</span></div>
+          <div class="dlr"><span class="dl-lbl">Down</span><span class="dp">−10% on poor converters</span></div>
+          <div class="dlr"><span class="dl-lbl">Rule</span><span class="dp dpa">step 20–30% every 3–4 days, never one jump</span></div>
+        </div>
+      </div>
+      <div class="d-conn">↓</div>
+
+      <div class="dtier">
+        <div class="dc-metric"><div class="dm-name">Weekly</div><div class="dm-title">Impression share</div><div class="dm-bench">Impact: medium</div></div>
+        <div class="dc-status ds-ok">◆</div>
+        <div class="dc-levers">
+          <div class="d-pass">◇ &nbsp;Lost to budget → budget is the constraint. Ask for it with evidence.</div>
+          <div class="d-pass">◇ &nbsp;Lost to rank → bids or Quality Score, not budget.</div>
+        </div>
+      </div>
+      <div class="d-conn">↓</div>
+
+      <div class="dtier">
+        <div class="dc-metric"><div class="dm-name">Monthly</div><div class="dm-title">Budget reallocation</div><div class="dm-bench">Impact: high</div></div>
+        <div class="dc-status ds-ok">◆</div>
+        <div class="dc-levers">
+          <div class="d-pass">◇ &nbsp;Money follows pipeline, not account structure</div>
+          <div class="d-pass">◇ &nbsp;Pause on evidence — enough spend to have had a fair chance</div>
+          <div class="d-pass">◇ &nbsp;Confirm conversions still fire. Every account, every month.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt24">
+      <div class="txxs text-m mb10">Bid strategy is a ladder. Each rung is unlocked by the one below it.</div>
+      <div class="d-chain" style="margin-top:12px">
+        <div class="d-step"><div class="ds-label">Launch or rebuild</div><div class="ds-title">Max Clicks</div><div class="ds-desc">Buy the data. Manual CPC keeps control of what you pay. Works with low volume.</div></div>
+        <div class="d-step"><div class="ds-label">Gate: 20–30 conversions</div><div class="ds-title">Max Conversions</div><div class="ds-desc">Smart bidding takes over. ~7 days to settle, higher CPCs while it does. Never on brand.</div></div>
+        <div class="d-step"><div class="ds-label">Gate: 4–6 weeks stable</div><div class="ds-title">Target CPA</div><div class="ds-desc">Set at the actual CPA, then step down 10–20% every two weeks. Volume is the trade-off.</div></div>
+      </div>
+    </div>
+
+    <div class="sb-judgment mt20">Skipping a rung is the most common cause of an account that "used to work." <span>Smart bidding without volume just optimizes noise.</span></div>
+  </div>
+</section>
+
+<!-- ================= S9 — UNIQUE INSIGHTS ================= -->
+<section class="sec alt" id="s9">
+  <div class="inner">
+    <div class="q-badge">Question 6</div>
+    <h2>What only Google can tell you</h2>
+    <div class="divider"></div>
+
+    <p style="color:var(--m);max-width:86ch">Every channel produces performance data. Google produces something no other channel does — <strong style="color:var(--t)">the exact words a buyer used to describe their own problem, at the moment they were looking to solve it.</strong></p>
+
+    <div class="grid2 mt24" style="gap:20px;align-items:start">
+      <div class="card orange-ring">
+        <div class="txxs text-o mb10">The words the market actually uses</div>
+        <p class="ts" style="color:var(--t)">Keyword tools tell you what people search. The search terms report tells you what <em>your buyers</em> search. When conversions cluster on one phrasing, that is a positioning finding, not a bidding one — it belongs in their LinkedIn copy, their homepage headline and their sales deck.</p>
+        <p class="ts mt12" style="color:var(--t)">On one account, conversions clustered hard on one word while the adjacent phrasing produced clicks and nothing else. The takeaway was not "raise the bid." It was that the market prefers that word.</p>
+      </div>
+
+      <div class="card">
+        <div class="txxs text-m mb10">Where the demand actually is</div>
+        <ul class="dl">
+          <li><strong>Impression share by theme</strong> shows unmet demand — a converting theme at 30% means we are visible to less than a third of the buyers looking for it</li>
+          <li><strong>Lost to budget vs lost to rank</strong> separates "we need more money" from "we need better ads" — two very different client conversations</li>
+          <li><strong>The Ads Transparency Center</strong> shows who else is bidding and roughly how heavily</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="txxs text-m mb10">Traffic that doesn't convert isn't always waste</div>
+        <p class="ts text-m">A theme with a 10% CTR and no conversions is not automatically a pause. Those are qualified people landing on the site and entering the retargeting pool, where LinkedIn converts them later. Keep it on purpose, or pause it on purpose — but not by accident.</p>
+      </div>
+
+      <div class="card">
+        <div class="txxs text-m mb10">The size of the opportunity</div>
+        <p class="ts text-m">Google is the only channel that will tell a client how big their in-market demand actually is. If the whole high-intent keyword set is 900 searches a month, no budget produces 50 demos from search. Uncomfortable, useful, and the strongest argument for demand gen there is.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= S10 — TEARDOWN ================= -->
+<section class="sec" id="s10">
+  <div class="inner">
+    <div class="q-badge">Question 7 · Live teardown</div>
+    <h2>Brandito — June was the worst month since we started</h2>
+    <div class="divider"></div>
+
+    <div class="grid2" style="gap:30px;align-items:start">
+      <div>
+        <div class="txxs text-m mb10">The situation</div>
+        <p class="ts text-m">B2B branded merchandise and company swag. $5,000 a month on Google. June came in at 9 leads and a $524 cost per lead — the worst month of the engagement. The client wanted to know whether Google was working.</p>
+
+        <div class="card mt20">
+          <div class="txxs text-m mb10">The order I open the tabs in</div>
+          <div class="gate" style="margin-top:8px">
+            <div class="gate-item"><div class="gate-n">01</div><div class="gate-t"><strong>Change history.</strong> No clean week means nothing else is evidence.</div></div>
+            <div class="gate-item"><div class="gate-n">02</div><div class="gate-t"><strong>Conversion tracking.</strong> This decides what every other number means.</div></div>
+            <div class="gate-item"><div class="gate-n">03</div><div class="gate-t"><strong>CTR and conversion rate.</strong> Locates the problem to a half of the funnel.</div></div>
+            <div class="gate-item"><div class="gate-n">04</div><div class="gate-t"><strong>Split brand out.</strong> Now the numbers are honest.</div></div>
+            <div class="gate-item"><div class="gate-n">05</div><div class="gate-t"><strong>Search terms.</strong> Where the money actually went.</div></div>
+            <div class="gate-item"><div class="gate-n">06</div><div class="gate-t"><strong>Ad group spend.</strong> What is earning its place and what isn't.</div></div>
+            <div class="gate-item"><div class="gate-n">07</div><div class="gate-t"><strong>Landing page.</strong> Last, and only if the numbers sent me here.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="txxs text-m mb10">Step 2 · what June actually looked like</div>
+        <div class="grid2" style="gap:12px">
+          <div class="bstat"><div class="bs-lbl">Blended CTR</div><div class="bs-val">9.63%</div><div class="bs-bench">Well above benchmark</div></div>
+          <div class="bstat flagged"><div class="bs-lbl">Conversion rate</div><div class="bs-val">0.99%</div><div class="bs-bench">Benchmark 2–5%</div></div>
+          <div class="bstat flagged"><div class="bs-lbl">Cost per lead</div><div class="bs-val">$524</div><div class="bs-bench">Benchmark $300–600</div></div>
+          <div class="bstat"><div class="bs-lbl">Leads</div><div class="bs-val">9</div><div class="bs-bench">on $4,720 spend</div></div>
+        </div>
+
+        <div class="card orange-ring mt20">
+          <div class="txxs text-o mb10">High CTR, low conversion rate</div>
+          <p class="ts" style="color:var(--t)">Top-right of the matrix. People were searching and clicking — the break was after the click. That points at the page, the form, or the tracking.</p>
+          <p class="ts mt12" style="color:var(--t)"><strong>It was the tracking.</strong> The leads were sitting in HubSpot. Google was not recording them. A conversion tracking gap made a normal month look like a collapse.</p>
+        </div>
+
+        <div class="txxs text-m mb10 mt24">Step 4 · July, after the fix — brand split out</div>
+        <div class="tt-wrap" style="margin-top:8px">
+          <table class="tt" style="min-width:0">
+            <thead><tr><th>Campaign</th><th>Spend</th><th>Clicks</th><th>CTR</th><th>Leads</th><th>CPL</th></tr></thead>
+            <tbody>
+              <tr><td>Brand</td><td>$990</td><td>512</td><td class="ok">31.0%</td><td>7</td><td class="ok">$141</td></tr>
+              <tr><td>Non-brand</td><td>$3,510</td><td>342</td><td class="ok">6.37%</td><td>7</td><td class="warn">$501</td></tr>
+              <tr class="tot"><td>Total</td><td>$4,500</td><td>854</td><td>12.16%</td><td>14</td><td>$321</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="ts text-m mt16">Brand is 22% of spend and half the leads, at a third of the cost. That is normal and it is not a reason to move budget — brand is capped by how many people search the name.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= S11 — DEAD ENDS ================= -->
+<section class="sec alt" id="s11">
+  <div class="inner">
+    <div class="q-badge">Question 7 · continued</div>
+    <h2>Three wrong turns on the way to the answer</h2>
+    <div class="divider"></div>
+
+    <p style="color:var(--m);max-width:86ch">Each of these is the obvious read. Each one is wrong, and each one costs real money.</p>
+
+    <div class="grid3 mt24" style="gap:14px;align-items:start">
+      <div class="dead">
+        <div class="dead-lbl">Wrong turn 1</div>
+        <p><strong>"June collapsed, so the ads stopped working."</strong> The leads were in the CRM the whole time — Google just wasn't recording them. Check tracking before you conclude anything about performance, or you will spend a month fixing a problem that doesn't exist.</p>
+      </div>
+      <div class="dead">
+        <div class="dead-lbl">Wrong turn 2</div>
+        <p><strong>"This ad group got zero leads in 90 days — pause it."</strong> Not always. One ad group had a <strong>7.3% CTR at around $10 a click</strong> and no leads. That is qualified traffic landing on the site and entering retargeting. We kept it deliberately.</p>
+      </div>
+      <div class="dead">
+        <div class="dead-lbl">Wrong turn 3</div>
+        <p><strong>"Brand produces leads at $141 — move budget there."</strong> You cannot buy more brand demand on Google. Only as many people search the name as search it. Growing that number is what LinkedIn and content are for.</p>
+      </div>
+    </div>
+
+    <div class="mt32">
+      <div class="txxs text-m mb10">Step 6 · ad group spend over 90 days, and the call on each</div>
+      <div class="tt-wrap" style="margin-top:8px">
+        <table class="tt">
+          <thead><tr><th>Ad group</th><th>Spend (90 days)</th><th>Leads</th><th>Signal</th><th>Call</th></tr></thead>
+          <tbody>
+            <tr class="flag"><td>"company swag store"</td><td>$1,010</td><td>1</td><td>Good keyword, far too expensive</td><td class="bad">Pause</td></tr>
+            <tr class="flag"><td>Second non-brand group</td><td>$763</td><td>0</td><td>No conversions, no signal</td><td class="bad">Pause</td></tr>
+            <tr class="flag"><td>Third non-brand group</td><td>$422</td><td>0</td><td>39 clicks, nothing</td><td class="bad">Pause</td></tr>
+            <tr><td>Fourth non-brand group</td><td>$252</td><td>1</td><td>Efficient — this is the learning we want</td><td class="ok">Keep</td></tr>
+            <tr><td>"branded merchandise fulfillment"</td><td>7.3% CTR · ~$10 CPC</td><td>0</td><td>Qualified traffic feeding retargeting</td><td class="ok">Keep</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="ts text-m mt16">Pausing the top three freed roughly <strong style="color:var(--t)">$2,200 over the quarter</strong> for the keywords that were converting. Note the logic: we did not pause them because the keywords were bad. We paused them because they had been given a fair chance and had not earned the room.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= S12 — THE FIX ================= -->
+<section class="sec" id="s12">
+  <div class="inner">
+    <div class="q-badge">Question 7 · the outcome</div>
+    <h2>What we changed, and what happened</h2>
+    <div class="divider"></div>
+
+    <div class="grid2" style="gap:30px;align-items:start">
+      <div>
+        <div class="txxs text-m mb10">Four changes, made together, then left alone</div>
+        <div class="find" style="margin-top:8px">
+          <div class="find-row p1"><div class="find-n">01</div><div class="find-t"><strong>Fixed conversion tracking</strong>Audited every action and closed the gap so Google could see the leads HubSpot already had.</div></div>
+          <div class="find-row"><div class="find-n">02</div><div class="find-t"><strong>Paused broad match, moved to phrase and exact</strong>Stopped paying for loosely related searches.</div></div>
+          <div class="find-row"><div class="find-n">03</div><div class="find-t"><strong>Paused three ad groups that had not earned their spend</strong>Freed the budget for keywords already converting.</div></div>
+          <div class="find-row"><div class="find-n">04</div><div class="find-t"><strong>Left everything else alone</strong>One clean period, so the next month could actually be read.</div></div>
+        </div>
+
+        <div class="card orange-ring mt20">
+          <div class="txxs text-o mb10">The pattern to remember</div>
+          <p class="ts" style="color:var(--t)">Impressions down 25%. Clicks down 6%. CTR up 26%. Leads up 56%. <strong>Fewer, better-qualified people — for less money.</strong> That is what tightening looks like, and it is why a falling impression count is not automatically bad news.</p>
+        </div>
+      </div>
+
+      <div>
+        <div class="txxs text-m mb10">June to July, same budget</div>
+        <div class="tt-wrap" style="margin-top:8px">
+          <table class="tt" style="min-width:0">
+            <thead><tr><th>Metric</th><th>June</th><th>July</th><th>Change</th></tr></thead>
+            <tbody>
+              <tr><td>Spend</td><td>$4,720</td><td>$4,500</td><td>−5%</td></tr>
+              <tr><td>Impressions</td><td>9,400</td><td>7,021</td><td class="ok">−25%</td></tr>
+              <tr><td>Clicks</td><td>905</td><td>854</td><td>−6%</td></tr>
+              <tr><td>CTR</td><td>9.63%</td><td>12.16%</td><td class="ok">+26%</td></tr>
+              <tr><td>Conversion rate</td><td>0.99%</td><td>1.64%</td><td class="ok">+66%</td></tr>
+              <tr class="flag"><td>Leads</td><td>9</td><td>14</td><td class="ok">+56%</td></tr>
+              <tr class="flag"><td>Cost per lead</td><td>$524</td><td>$321</td><td class="ok">−39%</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="mt24">
+          <div class="txxs text-m mb10">Saying it to the client</div>
+          <div class="obs-grid" style="grid-template-columns:1fr">
+            <div class="obs-card" style="padding:18px 20px">
+              <div class="obs-lbl">Observation</div>
+              <p class="obs-text">"June looked like a collapse — 9 leads at $524. When we dug in, the leads were in your HubSpot. Google wasn't recording them."</p>
+            </div>
+            <div class="obs-card" style="padding:18px 20px;border-top:1px solid var(--b)">
+              <div class="obs-lbl">Why it matters</div>
+              <p class="obs-text">"Google was bidding blind — it couldn't learn from leads it couldn't see. On top of that, broad match was spending on searches that were never going to buy."</p>
+            </div>
+            <div class="obs-card obs-action" style="padding:18px 20px">
+              <div class="obs-lbl">What we did, and the result</div>
+              <p class="obs-text">"We fixed the tracking, moved to phrase and exact, and paused three ad groups that weren't earning. Same budget, July came in at 14 leads at $321 — cost per lead down 39%."</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= S13 — THE HANDOFF ================= -->
+<section class="sec alt" id="s13">
+  <div class="inner">
+    <div class="q-badge">Question 8</div>
+    <h2>One question to be able to answer before any client call</h2>
+    <div class="divider"></div>
+
+    <div class="big-q">"Do I know <span class="text-o">why</span> the number is what it is — and can I name the one thing we're changing to move it?"</div>
+
+    <div class="grid2" style="gap:30px;align-items:start">
+      <div>
+        <p class="text-m">Clients do not need a Google Ads specialist. They need someone who knows what happened and why, and who does not get surprised. Answer that question and you can hold any Google conversation.</p>
+
+        <div class="card orange-ring mt20">
+          <div class="txxs text-o mb10">Three checks before the call</div>
+          <ul class="dl">
+            <li><strong>Is the data clean?</strong> Steady week, right conversion actions. If not, that is the headline — not the cost per lead.</li>
+            <li><strong>Which link broke?</strong> Query, click, page, form or tracking. Name one.</li>
+            <li><strong>What are we changing, and what moves first?</strong> Usually cost per lead before volume. Say it before they ask.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div>
+        <div class="txxs text-m mb10">The habits that build the trust</div>
+        <ul class="dl">
+          <li><strong>Never a number without a benchmark and a verdict.</strong> "6.37% — the benchmark is 3 to 5% — so we're above it." Value, range, meaning.</li>
+          <li><strong>Raise the bad news first.</strong> Underspend, a paused campaign, a soft week — framed as a decision. It buys you the benefit of the doubt on everything else.</li>
+          <li><strong>Ask about lead quality every call.</strong> "Did any of these move through the funnel?" It is the only real measure of whether we're doing a good job.</li>
+          <li><strong>Don't overpromise.</strong> Commit to what you're confident in, then beat it.</li>
+          <li><strong>Turn objections into segment questions.</strong> "$500 a lead is too expensive" is not a number to defend — it's a prompt to ask which segment is worth $500.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= S14 — PART 2 DIVIDER ================= -->
+<section class="part2-div" id="s14">
+  <div class="part2-kicker">Part 2 of 2</div>
+  <h2>Presenting the monthly Google report</h2>
+  <p>Same account, same numbers — now the job is a call that ends with the client trusting the plan.</p>
+</section>
+
+<!-- ================= S15 — THE MONTHLY REPORT ================= -->
+<section class="sec" id="s15">
+  <div class="inner">
+    <div class="eyebrow">Part 2</div>
+    <h2>How to walk a client through the month</h2>
+    <div class="divider"></div>
+
+    <p style="color:var(--m);max-width:86ch">The order matters more than the slides. It puts the channel's job before its numbers, the numbers before the verdict, and the verdict before the ask.</p>
+
+    <div class="grid2 mt24" style="gap:20px;align-items:start">
+      <div>
+        <div class="rpt-step">
+          <div class="rpt-n">01</div>
+          <div><div class="rpt-h">Frame it, and invite interruption</div><p class="rpt-b">"The report is yours after the call — stop me anywhere." Then say what the channel is for: capturing demand from people already searching.</p></div>
+        </div>
+        <div class="rpt-step">
+          <div class="rpt-n">02</div>
+          <div><div class="rpt-h">Five headline numbers, each with a range and a verdict</div><p class="rpt-b">Spend, leads, cost per lead, CTR, conversion rate. Never a bare number. Resist the dashboard dump.</p></div>
+        </div>
+        <div class="rpt-step emph">
+          <div class="rpt-n">03</div>
+          <div><div class="rpt-h">Raise the bad news yourself</div><p class="rpt-b">"We spent $4,500 of the $5,000 on purpose — the last $500 would have pushed cost per lead up." Raising it first builds trust. Them finding it destroys it.</p></div>
+        </div>
+        <div class="rpt-step">
+          <div class="rpt-n">04</div>
+          <div><div class="rpt-h">Split brand and non-brand</div><p class="rpt-b">And answer the obvious question before it's asked: brand looks better because brand is limited. Far fewer people search the name, and non-brand is simply harder.</p></div>
+        </div>
+        <div class="rpt-step">
+          <div class="rpt-n">05</div>
+          <div><div class="rpt-h">Where the money went, and what got paused</div><p class="rpt-b">"This ad group spent $763 over 90 days with no leads, so we paused it and moved the budget to what's converting." Every pause needs a reason.</p></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="rpt-step">
+          <div class="rpt-n">06</div>
+          <div><div class="rpt-h">What we learned about their market</div><p class="rpt-b">Which words converted, which phrasing buyers prefer, who else is bidding. This is the part they cannot get anywhere else.</p></div>
+        </div>
+        <div class="rpt-step emph">
+          <div class="rpt-n">07</div>
+          <div><div class="rpt-h">Ask about lead quality</div><p class="rpt-b">"How did these leads look? Did any move through the funnel?" It turns the client into a collaborator and gives you what you need to defend cost per lead next month.</p></div>
+        </div>
+        <div class="rpt-step">
+          <div class="rpt-n">08</div>
+          <div><div class="rpt-h">What's changing next, and what moves first</div><p class="rpt-b">Two or three actions with a date. After a structural change, cost per lead usually moves before volume — say that now, not in four weeks.</p></div>
+        </div>
+        <div class="rpt-step">
+          <div class="rpt-n">09</div>
+          <div><div class="rpt-h">The budget ask — only with evidence</div><p class="rpt-b">Needs all three: conversion volume, confirmed lead quality, and impression share headroom on something converting. "This theme converts at $180 and we're visible for 38% of those searches — here's what closing that gap costs."</p></div>
+        </div>
+
+        <div class="card orange-ring mt16">
+          <div class="txxs text-o mb10">The shape every finding takes</div>
+          <p class="ts" style="color:var(--t)"><strong>Observation → why it matters to their business → what we're doing and what to expect.</strong> No jargon survives that structure, and nobody leaves the call unsure what happens next.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= S16 — PUSHBACK ================= -->
+<section class="sec alt" id="s16">
+  <div class="inner">
+    <div class="eyebrow">Part 2 · The hard moments</div>
+    <h2>Four things a client will say</h2>
+    <div class="divider"></div>
+
+    <p style="color:var(--m);max-width:86ch">Notice the pattern in all four answers: <strong style="color:var(--t)">don't defend the number.</strong> Move to segment, timeline, or the boundary of what the channel controls.</p>
+
+    <div class="grid2 mt24" style="gap:16px;align-items:start">
+      <div class="card">
+        <div class="txxs text-a mb10">"The phone isn't ringing."</div>
+        <p class="ts text-m">Don't argue with the feeling. Acknowledge it, move to what the account has been doing and what changes this month, then ask what they <em>are</em> seeing come through. Nine times out of ten the gap between their inbox and the dashboard is attribution or form routing.</p>
+      </div>
+
+      <div class="card">
+        <div class="txxs text-a mb10">"$500 a lead isn't worth it for us."</div>
+        <p class="ts text-m">If their unit economics say so, concede immediately — arguing with a client's own maths costs you credibility. Then turn it into a segment question: which segment <em>is</em> worth $500, and which is worth $150? That conversation produces a better account.</p>
+      </div>
+
+      <div class="card">
+        <div class="txxs text-a mb10">"These leads were bad."</div>
+        <p class="ts text-m">Get specifics, and be honest about the limit: on search we buy the query, not the person. Then show the levers we do have — negatives, tighter match types, audience exclusions, a business-email gate on the form. Give a concrete change and a date. Promise a tighter filter, never perfect quality.</p>
+      </div>
+
+      <div class="card">
+        <div class="txxs text-a mb10">"Should we just put it all into Google?"</div>
+        <p class="ts text-m">Answer with the ceiling. Non-brand is capped by how many people search the category; brand by how many have heard of them. Cutting demand gen shrinks the ceiling of the channel they're doubling down on. Show the search volume number — it's the most honest argument there is.</p>
+      </div>
+    </div>
+
+    <div class="card orange-ring mt20">
+      <div class="txxs text-o mb10">And one to say before they do</div>
+      <p class="ts" style="color:var(--t)">"Here's what I wasn't happy with this month." Naming your own miss costs very little and buys a lot of latitude on strategy. Clients forgive process problems. They do not forgive being managed.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= S17 — PRINCIPLES ================= -->
+<section class="sec" id="s17">
+  <div class="inner">
+    <div class="eyebrow">Close</div>
+    <h2>Eight principles for reviewing a Google Ads account</h2>
+    <div class="divider"></div>
+
+    <div class="principles-grid" style="grid-template-columns:repeat(2,1fr)">
+      <div class="p-item"><div class="p-num">01</div><div class="p-text"><strong>Change history before metrics</strong>No clean week means nothing on the screen is evidence yet.</div></div>
+      <div class="p-item"><div class="p-num">02</div><div class="p-text"><strong>Check what you're optimizing to</strong>The wrong conversion action makes an account worse the longer it runs.</div></div>
+      <div class="p-item"><div class="p-num">03</div><div class="p-text"><strong>Split brand out before you judge</strong>Blended numbers hide broken non-brand campaigns behind healthy brand ones.</div></div>
+      <div class="p-item"><div class="p-num">04</div><div class="p-text"><strong>CTR and conversion rate first</strong>Together they locate the problem to one half of the funnel in a minute.</div></div>
+      <div class="p-item"><div class="p-num">05</div><div class="p-text"><strong>Phrase and exact first</strong>Broad match is a capped test with a judgment date, never the engine.</div></div>
+      <div class="p-item"><div class="p-num">06</div><div class="p-text"><strong>Cheap clicks are a warning</strong>Tighter targeting means fewer impressions, higher CPC, more conversions.</div></div>
+      <div class="p-item"><div class="p-num">07</div><div class="p-text"><strong>Pause on evidence, not impatience</strong>Give it a fair chance, then judge it on what it spent.</div></div>
+      <div class="p-item" style="background:var(--od);border-color:var(--om)">
+        <div class="p-num" style="opacity:1">08</div>
+        <div class="p-text"><strong style="color:var(--o)">The review question</strong><span style="color:var(--t)">"Do I know why the number is what it is, and can I name the one thing we're changing to move it?"</span></div>
+      </div>
+    </div>
+
+    <div style="margin-top:52px;padding-top:34px;border-top:1px solid var(--b);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px">
+      <div>
+        <div style="font-family:var(--fd);font-size:1rem;font-weight:700">Google Ads CoE</div>
+        <div style="font-family:var(--fm);font-size:.62rem;color:var(--f);margin-top:4px;letter-spacing:.08em">Strategic Review Training · Client Solutions Advisors</div>
+      </div>
+      <div style="font-family:var(--fm);font-size:.6rem;color:var(--f);letter-spacing:.1em;text-transform:uppercase">Impactable · Internal</div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<script>
+(function(){
+  const sections = ['s0','s1','s2','s3','s4','s5','s6','s7','s8','s9','s10','s11','s12','s13','s14','s15','s16','s17'];
+  const pips = document.querySelectorAll('.pip');
+
+  function goto(id){
+    const el = document.getElementById(id);
+    if(el) el.scrollIntoView({behavior:'smooth'});
+  }
+  window.goto = goto;
+
+  const obs = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        const idx = sections.indexOf(entry.target.id);
+        if(idx > -1){
+          pips.forEach(function(p){ p.classList.remove('active'); });
+          if(pips[idx]) pips[idx].classList.add('active');
+        }
+      }
+    });
+  },{threshold:0.35});
+
+  sections.forEach(function(id){
+    const el = document.getElementById(id);
+    if(el) obs.observe(el);
+  });
+
+  document.addEventListener('keydown', function(e){
+    const cur = Array.from(pips).findIndex(p => p.classList.contains('active'));
+    if(e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === 'ArrowRight'){
+      e.preventDefault();
+      goto(sections[Math.min(cur+1, sections.length-1)]);
+    }
+    if(e.key === 'ArrowUp' || e.key === 'PageUp' || e.key === 'ArrowLeft'){
+      e.preventDefault();
+      goto(sections[Math.max(cur-1, 0)]);
+    }
+  });
+})();
+</script>
+</body>
+</html>
